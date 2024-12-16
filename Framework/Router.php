@@ -8,7 +8,7 @@ class Router{
 
     public function AddTORoute($path , $controllerActionArray = []){
         $this->routes[$path] = $controllerActionArray;
-        // print_r($this->routes);
+        
     }
     
     public function match($path){
@@ -17,7 +17,7 @@ class Router{
         $path =trim($path, '/');
  
 //    $path =implode("/", $path);
-//    print_r($path);
+   print_r($path);
        foreach($this->routes as $route =>$eleDetails){
         // the route the key of  each element of routes array is pass to the regex method
         
@@ -25,12 +25,12 @@ class Router{
     //    print_r($pattern);
         // now compare the path with the regex 
         #^(?<controller>[a-z][a-z0-9]*)/(?<action>[a-z][a-z0-9]*)$#
-        // print_r($path);
+        print_r($path);
        if(preg_match($pattern , $path, $matches)){
         //   the below array filter remove the numeric key values from the array 
         // and show only the string key with values.
           $matches =  array_filter($matches, "is_string", ARRAY_FILTER_USE_KEY);
-          print_r($matches);
+        //   print_r($matches);
         
         //   print_r($eleDetails);
         //   exit;
@@ -56,9 +56,16 @@ class Router{
         // }
         // ----------------------------------------------
         if($matches){
+            // dump($matches);
             return $matches;
+
+        }if($complete_slug_Array){
+        //   dump($complete_slug_Array);
+            return $complete_slug_Array;
+        }else{
+            // return false;
         }
-        return $complete_slug_Array;
+        
         
     
        
@@ -88,7 +95,7 @@ class Router{
             // echo "<br>";
             $pattern_slug = '#^\{([a-z][a-z0-9]*):(.*)\}$#';
             if(preg_match($pattern_slug , $ele , $smatches)){
-                // pritn_r($smatches);
+                // dump($smatches);
                  return "(?<".$smatches[1].">".$smatches[2].")";
               
             }

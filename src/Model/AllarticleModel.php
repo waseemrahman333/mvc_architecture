@@ -2,7 +2,7 @@
 namespace App\Model;
 use PDO;
 use App\Database;
-class ArticlesModel {
+class AllarticleModel {
    
         public function __construct(private Database $db){
 
@@ -10,7 +10,7 @@ class ArticlesModel {
 
     public function runQuery(){
         $pdo = $this->db->getconnection();
-        $statement = $pdo->query("SELECT * FROM articles ");
+        $statement = $pdo->query("SELECT * FROM articles");
         // dump($statement);
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -3,14 +3,17 @@ namespace Framework;
 use ReflectionMethod;
 use ReflectionClass;
 use App\Database;
-
 class Dispatcher{
 
-      private Router $router;
+      // private Router $router;
+      private Container $container;
+
 
     // constructor function
-    public function __construct(Router $router){
-       $this->router = $router;
+    public function __construct(private Router $router, Container $container){
+      //  $this->router = $router;
+       $this->container = $container;
+
     }
     // make an object for the contorller and call action through controller class,
     public function handle($url){
@@ -32,10 +35,13 @@ class Dispatcher{
             // hardcotted viewer class initialization
             // $viewer = new Viewer();
             // controller class is automatically instantiated through objgetter
-          $controller = $this->objGetter($controllerClass);
+          // $controller = $this->objGetter($controllerClass);
+          // the above line is commented because now we are initailzing the class through container
+          $controller = $this->container->get($controllerClass);
           // $controller = new $controllerClass($viewer);
           $reflectionMethod = new ReflectionMethod($controller ,$action);
           // dd($reflectionMethod);
+          // this is for the slug url like node/10
           $parameters = $reflectionMethod->getParameters();
           // dump($parameters);
           $paramsArray = [];
@@ -49,22 +55,5 @@ class Dispatcher{
           }else{
             print "root not found";
           };
-    }
-    public function objGetter($className){
-      
-      $classDetail = new ReflectionClass($className);
-      dump($classDetail);
-      if($classDetail->getConstructor() === null){
-        return new $className;
-      }
-      $constructParamArray = $classDetail->getConstructor()->getParameters();
-      foreach($constructParamArray as $constructParam){
-        $subClass = $constructParam->getType()->getName();
-         $ParamToConstruct[] = $this->objGetter($subClass);
-      }
-      dump($ParamToConstruct);
-      // exit;
-      return new $className(...$ParamToConstruct);
-
     }
 }
